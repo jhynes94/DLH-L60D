@@ -5,8 +5,19 @@
 #include "DLH.h"
 
 
-DLH::DLH()
+DLH::DLH(uint32_t command)
 {
+  measCommand = command;
+}
+
+void printBinNum(uint8_t num){
+  for(int i=0; i<8; i++){
+    Serial.print((num & ( 1 << i )) >> i);
+  }
+}
+
+void DLH::setMeasurementCommand(uint32_t command){
+  measCommand = command;
 }
 
 
@@ -17,14 +28,7 @@ uint32_t DLH::readPressure(){
   Wire.begin();
   Wire.beginTransmission(0x29);
   
-  /*
-  Single    0xAA
-  Average2  0xAC
-  Average4  0xAD
-  Average8  0xAE
-  Average16 0xAF
-  */
-  Wire.write(0xAF); //Sets Numbers to average
+  Wire.write(measCommand); //Sets Numbers to average
   Wire.endTransmission();
   delay(63);
   
@@ -36,6 +40,7 @@ uint32_t DLH::readPressure(){
     uint8_t c = Wire.read();
 
     //Log binary code
+    //Serial.begin(9600);
     //printBinNum(c); Serial.print(" ");
 
     uint32_t temp = c;
