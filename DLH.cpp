@@ -29,8 +29,29 @@ uint32_t DLH::readPressure(){
   Wire.beginTransmission(0x29);
   
   Wire.write(measCommand); //Sets Numbers to average
+
   Wire.endTransmission();
-  delay(63);
+
+  switch(measCommand){
+	case 0xAA:
+	 	delayMicroseconds(4100);
+		break;
+	case 0xAC:
+		delay(8);
+		break;
+	case 0xAD:
+		delay(15);
+	 	delayMicroseconds(700);
+		break;
+	case 0xAE:
+		delay(31);
+	 	delayMicroseconds(100);
+		break;
+	case 0xAF:
+		delay(61);
+	 	delayMicroseconds(900);
+		break;
+  }
   
   
   Wire.requestFrom(0x29, 7); //Read 7 bytes
